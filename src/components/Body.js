@@ -15,17 +15,13 @@ const Body = () => {
   },[]);
 
   const fetchData = async () =>{
-    try{
     const data = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.71142140051808&lng=77.1383923664689&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
     );
 
     const json = await data.json();
     console.log(json);
-    console.log(json.data.cards);
-    setlistofRestaurants(json?.data?.cards || [] );
-    }catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    console.log(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    setlistofRestaurants(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants );
 
   };
 
@@ -47,7 +43,7 @@ const Body = () => {
       </div>
       <div className="resContainer">
         { listofRestaurants.map((restaurant,index) => (
-          <ResCard key={index } resData={restaurant?.card?.card?.gridElements?.infoWithStyle?.restaurants?.[0]?.info} />
+          <ResCard key={index } resData={restaurant?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants.info} />
         ))}
       </div>
     </div>

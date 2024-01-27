@@ -1,36 +1,35 @@
 import React from "react";
 import { CDN_URL } from "../utils/constants";
 
-const ResCard = (props) => {
-  const { resData } = props;
-
-  if (!resData || !resData.data || !resData.data.cards || !resData.data.cards.length) {
-    return null; }
-
-  const restaurantInfo = resData.data.cards[0]?.card?.card?.gridElements?.infoWithStyle?.restaurants?.[0]?.info;
-
-  if (!restaurantInfo) return null;
-
-  const {
-    name,cloudinaryImageId,costForTwo,cuisines,avgRating,
-  } = restaurantInfo;
-
+const ResCard = ({
+  cloudinaryImageId,
+  name,
+  cuisines,
+  costForTwo,
+  avgRating,
+}) => {
   return (
-    <div className="resCard">
+    <div className="card">
       <img
-        className="res-logo"
-        alt="res-logo"
-        src={CDN_URL + cloudinaryImageId}
+        src={
+          "https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_508,h_320,c_fill/" +
+          cloudinaryImageId
+        }
       />
-      <h3>{name}</h3>
-      <h4>{cuisines.join(", ")}</h4>
-      <h4>Rs.{costForTwo} is cost for two</h4>
-      <h4>{avgRating} stars</h4>
+      <h2>{name}</h2>
+      <h4>{cuisines}</h4>
+      <h4>{avgRating}</h4>
+      <span>
+        <h4><i class="fa-solid fa-star"></i>{avgRating}</h4>
+        <h4>Rs.{costForTwo} is cost for two</h4>
+      </span>
     </div>
   );
 };
 
+
 export default ResCard;
+
 
 
 
