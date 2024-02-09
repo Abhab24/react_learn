@@ -16,31 +16,33 @@ const Header = () => {
   const onlineStatus = useOnlineStatus();//boolean value of status from our custom hook...1 or 0
 
   return (
-    <div className="header">
-      <div>
-        <img className="logo" src={LOGO_URL} />
+    <div className="flex justify-between bg-blue-100 shadow-lg">
+      <div class="logo-container">
+        <img className="w-56" src={LOGO_URL} />
       </div>
-      <div className="nav-items">
-        <ul>
-          <li>
+      <div className="flex items-center">
+        <ul className="flex p-4 m-4 ">
+          <li className="px-4">
             Online Status :{onlineStatus?"✅":"🔴"}
           </li>
-          <li>
+          <li className="px-4">
             <Link to="/">Home</Link>
           </li>
-          <li>
+          <li className="px-4">
             <Link to="/about">About Us</Link>
           </li>
-          <li>
+          <li className="px-4">
             <Link to="/contact">Contact Us</Link>
           </li>
-          <li>            
+          <li className="px-4">            
             <Link to="/Grocery">Grocery</Link>
           </li>
-
-          <li>Cart</li>
-          <button
-            className="login"
+          <li className="px-4">
+            Cart
+            </li>
+            <li>
+          <button 
+            className="px-4 bg-slate-300 rounded-lg "
             onClick={() => {
               //{ blue bracket for jsx ,The button label is toggled between "Login" and "Logout" based on user clicks
               btnNameReact === "Login"
@@ -51,6 +53,7 @@ const Header = () => {
           >
             {btnNameReact}
           </button>
+          </li>
         </ul>
       </div>
     </div>

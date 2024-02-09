@@ -72,18 +72,18 @@ const Body = () => {
   return (
     //this filter div has search bar,top rated filter
     <div className="body">
-      <div className="filter">
-        <div className="search">
+      <div className="filter flex ">
+        <div className="search m-4 p-4">
           <input //search input ,input is controlled by searchtext state variable
             type="text"
-            className="search-box"
+            className="border border-solid border-black"
             value={searchText} //this is for updating the actual value of input tag to the one typed which is provided by the searchtext state variable
             onChange={(e) => {
               //(this loop is for changing value of input on ui for display)When the input value changes (onChange), the setsearchText function is called to update the searchtext variable and state of component
               setsearchText(e.target.value);
             }}
           />
-          <button
+          <button className="px-4 py-2 bg-green-100 m-4 rounded-lg "
             onClick={() => {
               //if search button gets clicked then filtering fn is called
               console.log("Search Button Clicked");
@@ -101,8 +101,9 @@ const Body = () => {
             Search
           </button>
         </div>
+        <div className="search m-5 p-5 flex items-center">
         <button
-          className="filter-btn"
+          className="px-4 py-2 bg-gray-200 rounded-lg"
           onClick={() => {
             console.log("Filter Button Clicked");
             const filteredList = listofRestaurants.filter(
@@ -114,8 +115,9 @@ const Body = () => {
         >
           Top Rated Restaurant
         </button>
+        </div>
       </div>
-      <div className="resContainer">
+      <div className="resContainer flex flex-wrap">
         {filteredRestaurants.map(
           (
             restaurant //now well also render using filtered restaurants

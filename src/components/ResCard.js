@@ -15,17 +15,17 @@ const ResCard = (props) => {
     resData?.info;
 
   return (
-    <div className="resCard">
+    <div className="m-4 p-4 w-[250px] bg-gray-100 rounded-lg hover:bg-gray-200">
       <img
-        className="res-logo"
+        className="res-logo rounded-lg"
         alt="res-logo"
         src={CDN_URL + cloudinaryImageId}
       />
-      <h2>{name}</h2>
+      <h2 className="font-bold py-4 text-lg">{name}</h2>
+      <h4 className="font-bold"> {avgRating} stars</h4>
       <h4>{cuisines.join(", ")}</h4>
       <span>
-        <h4>{avgRating} stars</h4>
-        <h4> Cost is {costForTwo} </h4>
+        <h4> {costForTwo} </h4>
       </span>
     </div>
   );
