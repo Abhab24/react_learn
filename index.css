@@ -60,3 +60,10 @@
 .filter{
   display: flex;
 }
+.userCard{
+  width: 200px;
+  height: 300px;
+  margin: 20px;
+  padding:10px;
+  background-color: rgb(213, 197, 197);
+}
