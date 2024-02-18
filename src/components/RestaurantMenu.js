@@ -1,53 +1,70 @@
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
+import RestaurantCategory from "./RestaurantCategory";
+import { useState } from "react";
 
-const RestaurantMenu = () => {
-  //is not inside body component, its a different component
-  //const [resInfo, setresInfo] = useState(null);
-  const { resId } = useParams();
+//WORKING: 
+//1. we extract resId using useParams hook
+//2. we pass this resId as an input to custom hook which fetches the data of menu of each res
+//3. we access the menu data that we got above by destructuring it ,then applying filter fn,then rendering it on UI using jsx
+// first we render each restuarnts info on top and then the categories and the items inside each category using map fn
+
+//(path mein resId hogi jisko ham useParams se extract krlenge fir is value ko as input bhj denge custom hook ko jo data fetch krega each res menu ka)
+
+//displays menu data of each restaurant on UI
+const RestaurantMenu = () => {//(not inside body component)its a different component 
+   //GETTING THE DATA
+  //in react this hook is used to access the parameters (route parameters) that are defined in the URL
+  //some of the routes might have dynamic segments, such as /:resId. These dynamic segments are placeholders for values that will be extracted from the URL
+  const { resId } = useParams();//(resId naam ka dynamic parameter agr h kisi path mein to vo mil jaega aise)
   //extracts resId from useParam hook
-  //this fn returns an object with resId of the current path/url of our browser in it
+  //this fn returns an object with resId of the current route of our browser
   //{} doing this destructures the object to get resId directly
 
-  //we are trying to abstract the fetch data logic and put inside this hook
-  const resInfo = useRestaurantMenu(resId); //lets make this custom hook which gives us resinfo
-  //we pass resId to it and its work is to fetch this restaurants information
-  if (resInfo === null) return <Shimmer />;
+  //CUSTOM HOOK (starts with use) - has its logic outside of current component(resmenu) ...this helps to give only 1 work to the current componenet
+  //we are trying to abstract(put outside the current component) the fetch data logic and put inside this custom hook
+  //this custom hook takes resId as input and returns restaurant menu data by fetching it from API endpoint
+  //using this hook this component does not have to manage its own state
+  const resInfo = useRestaurantMenu(resId);
+  const[showIndex,setshowIndex]= useState(null);
 
-  const { name, cuisines, costForTwoMessage, avgRating, city, areaName } =
-    resInfo?.cards[0]?.card?.card?.info; //destructuring// to get info about each restaurant on top (to simplify this graphql is used)
+  if (resInfo === null) return <Shimmer />; //conditional rendering 
 
-  //last mein itemCards naam ki array hai so last mein . ki jgh isko likh diya
-  const { itemCards } =
-    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card?.card; //to get menu items
+  const { name, cuisines, costForTwoMessage, city, areaName } =
+    resInfo?.cards[0]?.card?.card?.info; //(destructuring)to get info about each restaurant on top (its difficult to simplify this graphql is used)
 
-  console.log(itemCards);
+  //to get the menu categories of each restaurant
+  //filter fn use krke sirf vo cards chiye jinka type ... ye ho coz sirf inhi cards mein categories hain restaurant menu ki
+  //this is an array of categories having cards which again have array of that category items
+  const categories =
+    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+      (c) =>
+        c.card?.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
+  console.log(categories);
+
+  //RENDERING THE DATA ON UI
   return (
-    <div className="menu">
-      <h1>{name}</h1>
-      <p>{cuisines.join(", ")}</p>
-      <hr></hr>
-      <h3>{costForTwoMessage}</h3>
-      <h3>{avgRating} stars</h3>
+    <div className="menu text-center ">
+      <h1 className="font-bold my-6 text-2xl">{name}</h1>
+      <p className="font-bold text-lg">
+        {cuisines.join(", ")} {costForTwoMessage}
+      </p>
       <h3>
         {city}, {areaName}
       </h3>
       <hr></hr>
-      <h2>Menu</h2>
-      <ul>
-        {itemCards.map((item) => (
-          <ul key={item.card.info.id}>
-            <h3>
-              {item.card.info.name} <br></br>Rs.
-              {item.card.info.price / 100 ||
-                item.card.info.defaultPrice / 100}{" "}
-            </h3>
-            {item.card.info.description}
-            <hr></hr>
-          </ul>
-        ))}
-      </ul>
+      {categories.map((category,index) =>  (//iterates on each category array
+      //CONTROLLED COMPO
+        <RestaurantCategory
+          key={category?.card?.card?.title}
+          data={category?.card?.card}
+          showItems={index === showIndex? true:false}
+          setshowIndex = {()=>setshowIndex(index)}
+        />
+      ))}
     </div>
   );
 };

@@ -1,8 +1,9 @@
-import ResCard from "./ResCard";
+import ResCard, { withClosedLabel } from "./ResCard";
 import Shimmer from "./Shimmer";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";//for accessing logged in user and setusername
 //resList : is an array of all restaurants (json response ki jo sari restaurant arrays thi jo hamne file bnake yha daala hua tha directly), har 1 rest ki info h isme
 
 const Body = () => {
@@ -25,7 +26,9 @@ const Body = () => {
 
   const [searchText, setsearchText] = useState("");
 
-  console.log("Body rendered"); //this is helpful for understanding the component lifecycle
+  const RestCardClosed = withClosedLabel(ResCard); //HOC
+
+  //console.log("Body rendered", listofRestaurants); //this is helpful for understanding the component lifecycle
 
   useEffect(() => {
     //anything inside this fn will be called after rendering the function
@@ -54,20 +57,28 @@ const Body = () => {
     setfilteredRestaurants(
       json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
+    console.log(listofRestaurants);
   };
 
-  const onlineStatus= useOnlineStatus();
+  const onlineStatus = useOnlineStatus(); //getting current status value from custom hook
 
-  if(onlineStatus===false) 
-  return (
-  <h1>Looks like you are offline ;/ Please check your internet connection!! </h1>
-  );
+  if (onlineStatus === false)
+    return (
+      <h1>
+        Looks like you are offline ;/ Please check your internet connection!!{" "}
+      </h1>
+    );
+
+  const { loggedInUser,setuserName } = useContext(UserContext);
+
   //conditional rendering
   if (listofRestaurants === null) {
     //for better user experience while waiting for data to get loaded placeholders are visible on ui
     //before the data gets fetched the empty screen will have this instead
     return <Shimmer />; //syntax for rendering a component inside something
   }
+  console.log(listofRestaurants);
+
   //to get data from input box, we need to take its value and we have to bind this input box to a local state variable
   return (
     //this filter div has search bar,top rated filter
@@ -83,7 +94,8 @@ const Body = () => {
               setsearchText(e.target.value);
             }}
           />
-          <button className="px-4 py-2 bg-green-100 m-4 rounded-lg "
+          <button
+            className="px-4 py-2 bg-green-100 m-4 rounded-lg "
             onClick={() => {
               //if search button gets clicked then filtering fn is called
               console.log("Search Button Clicked");
@@ -102,38 +114,52 @@ const Body = () => {
           </button>
         </div>
         <div className="search m-5 p-5 flex items-center">
-        <button
-          className="px-4 py-2 bg-gray-200 rounded-lg"
-          onClick={() => {
-            console.log("Filter Button Clicked");
-            const filteredList = listofRestaurants.filter(
-              //reassigns a new filtered array
-              (res) => res.info.avgRating > 4
-            );
-            setfilteredRestaurants(filteredList); //we have to update filteredrestaurants variable as we are rendering ui using it on filtering and searching both
-          }}
-        >
-          Top Rated Restaurant
-        </button>
+          <button
+            className="px-4 py-2 bg-gray-200 rounded-lg"
+            onClick={() => {
+              console.log("Filter Button Clicked");
+              const filteredList = listofRestaurants.filter(
+                //reassigns a new filtered array
+                (res) => res.info.avgRating > 4
+              );
+              setfilteredRestaurants(filteredList); //we have to update filteredrestaurants variable as we are rendering ui using it on filtering and searching both
+            }}
+          >
+            Top Rated Restaurant
+          </button>
+        </div>
+        <div className="search m-5 p-5 flex items-center">
+          <label>UserName :   </label>
+         <input className="border border-black p-2 " 
+         value={loggedInUser}
+         onChange={(e)=> setuserName(e.target.value)} 
+         />
         </div>
       </div>
       <div className="resContainer flex flex-wrap">
-        {filteredRestaurants.map(
-          (
-            restaurant //now well also render using filtered restaurants
-          ) => (
-            //filteredrestaurants has all the restaurant cards to be displayed
-            // doing restuarnts on it world give us access to each restaurant card
-            //but doing restaurant.info gives us access to data of each card (1 step andr) so we use it as a prop for rescard component
-            <Link
-              key={restaurant.info.id}
-              to={"/restaurants/" + restaurant.info.id}
-            >
-              <ResCard resData={restaurant} />
-            </Link> //resData is prop we are passing to rescard component
-            //restaurants are all the array of cards and by doing .info we can access all the details liek name cuisine of cards
-          )
-        )}
+        {filteredRestaurants &&
+          filteredRestaurants.map(
+            (
+              restaurant //now well also render using filtered restaurants
+            ) => (
+              //filteredrestaurants has all the restaurant cards to be displayed
+              // doing restuarnts on it world give us access to each restaurant card
+              //but doing restaurant.info gives us access to data of each card (1 step andr) so we use it as a prop for rescard component
+              //our restaurants are rendered here 1 by 1 using ResCard component and we are passing the data as well using restaurant
+              <Link
+                key={restaurant.info.id}
+                to={"/restaurants/" + restaurant.info.id}
+              >
+                {/* if the restayrant is closed addd a closed label to it*/}
+                {restaurant.info.isOpen ? (
+                  <RestCardClosed resData={restaurant} />
+                ) : (
+                  <ResCard resData={restaurant} />
+                )}
+              </Link> //resData is prop we are passing to rescard component
+              //restaurants are all the array of cards and by doing .info we can access all the details liek name cuisine of cards
+            )
+          )}
       </div>
     </div>
   );
