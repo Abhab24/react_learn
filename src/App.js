@@ -5,9 +5,12 @@ import Body from "./components/Body";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom"; //(cbr creates routing configurations)the code of reactprovider component is written by react router dom creators
 import About from "./components/About";
 import Contact from "./components/Contact";
+import Cart from "./components/Cart";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
 import UserContext from "./utils/UserContext";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
 
 //1.NEED FOR LAZY LOADING :react app's code is buldled by parcel in 1 js file but if the app is huge this file will be v large and it will make our app slow
 //so we need to make small bundles of all the files(logically breaking the code )...a bundle should have enough code for a feature
@@ -21,7 +24,7 @@ const Grocery = lazy(() => import("./components/Grocery")); //lazy function take
 
 const About = lazy(()=>import("./components/About"));
 
-const AppLayout = () => {
+const AppLayout = () => {//parent component for context
   //lets have authentication logic here and we keep that data in this state variable
   const [userName,setuserName] = useState();
 
@@ -39,6 +42,8 @@ const AppLayout = () => {
   //<Outlet/> gets replaced by the component which our current path has
 
   //loggedinuser is the global variable and we are modifyig its value here to the userName variable's value which we have set above
+  //provider is for connecting our app to redux store
+  <Provider store={appStore}>
   <UserContext.Provider value={{loggedInUser: userName, setuserName}}>
     {/* abha */}
     <div className="app">
@@ -46,6 +51,7 @@ const AppLayout = () => {
       <Outlet/> 
     </div>
   </UserContext.Provider>
+  </Provider>
 
   );
 };
@@ -87,6 +93,10 @@ const appRouter = createBrowserRouter([
         //is path mein resId hogi jisko ham useParams se extract krlenge fir is value ko as input bhj denge custom hook ko jo data fetch krega each res menu ka
         path: "/restaurants/:resId", //giving dynamic url , resId is dynamic
         element: <RestaurantMenu />,
+      },
+      {
+        path:"/Cart",
+        element:<Cart/>
       },
     ],
     errorElement: <Error />,

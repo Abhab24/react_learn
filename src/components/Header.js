@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";//for accessing logged in user
+import { useSelector } from "react-redux";
 //importing link component for linking routes st we can navigate to the new page without reloading the whole page
 
 const Header = () => {//logo,nav bar,login logout button with a dynamic label
@@ -15,8 +16,12 @@ const Header = () => {//logo,nav bar,login logout button with a dynamic label
 
   const onlineStatus = useOnlineStatus();//boolean value of status from our custom hook...true or false
 
-  const {loggedInUser}= useContext(UserContext);//accessing react context using usecontext fn with context name and {}
+  const {loggedInUser}= useContext(UserContext);//accessing react context using usecontext fn with context name and {} for extracting data
   console.log(loggedInUser);
+
+  //subscribing to the store using selector
+ const cartItems = useSelector((store)=>store.cart.items);
+ console.log(cartItems);//items added in cart(slice)
 
   //link tag se hamne routes ko nav bar se connect kiya hai
   //link path set krdeta hai word ka and path component ko load krdeta hai routing ki vjh se
@@ -42,8 +47,8 @@ const Header = () => {//logo,nav bar,login logout button with a dynamic label
           <li className="px-4">            
             <Link to="/Grocery">Grocery</Link>
           </li>
-          <li className="px-4">
-            Cart
+          <li className="px-4 font-bold text-xl">
+           <Link to="/Cart"> Cart - ({cartItems.length} items) </Link>
             </li>
             <li>
           <button 

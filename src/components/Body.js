@@ -57,7 +57,7 @@ const Body = () => {
     setfilteredRestaurants(
       json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
-    console.log(listofRestaurants);
+    //console.log(listofRestaurants);
   };
 
   const onlineStatus = useOnlineStatus(); //getting current status value from custom hook
@@ -69,7 +69,7 @@ const Body = () => {
       </h1>
     );
 
-  const { loggedInUser,setuserName } = useContext(UserContext);
+  const { loggedInUser,setuserName } = useContext(UserContext);//extracting state from context
 
   //conditional rendering
   if (listofRestaurants === null) {
@@ -129,7 +129,7 @@ const Body = () => {
           </button>
         </div>
         <div className="search m-5 p-5 flex items-center">
-          <label>UserName :   </label>
+          <label>UserName : </label>
          <input className="border border-black p-2 " 
          value={loggedInUser}
          onChange={(e)=> setuserName(e.target.value)} 

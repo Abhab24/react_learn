@@ -6,10 +6,8 @@ import UserContext from "../utils/UserContext";
 class About extends React.Component {
   constructor(props) {
     super(props);
-
     //console.log("parent constructor");
   }
-
   componentDidMount() {
    // console.log("parent component Did Mount");
   }
