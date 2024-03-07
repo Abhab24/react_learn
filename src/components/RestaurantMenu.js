@@ -35,14 +35,14 @@ const RestaurantMenu = () => {//(not inside body component)its a different compo
 
   if (resInfo === null) return <Shimmer />; //conditional rendering 
 
-  const { name, cuisines, costForTwoMessage, city, areaName } =    resInfo?.cards[2]?.card?.card?.info;
+  const { name, cuisines, costForTwoMessage, city, areaName } = resInfo?.cards[0]?.card?.card?.info;
    //(destructuring)to get info about each restaurant on top (its difficult to simplify this graphql is used)
 
   //to get the menu categories of each restaurant
   //filter fn use krke sirf vo cards chiye jinka type ... ye ho coz sirf inhi cards mein categories hain restaurant menu ki
   //this is an array of categories having cards which again have array of that category items
   const categories =
-    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
       (c) =>
         c.card?.card?.["@type"] ===
         "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"

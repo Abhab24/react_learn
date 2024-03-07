@@ -136,7 +136,8 @@ const config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  //setupFilesAfterEnv: [],
+
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -146,6 +147,10 @@ const config = {
 
   // The test environment that will be used for testing
   testEnvironment: "jsdom",
+  //setupFilesAfterEnv: ['<rootDir>/[path-to-file]/jest-setup.js'] ,
+
+  //setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
